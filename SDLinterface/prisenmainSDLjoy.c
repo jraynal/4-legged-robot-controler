@@ -35,56 +35,35 @@ int main( void ){
     /* Check for events */
     while(SDL_PollEvent(&event)) { /* Loop until there are no events left on the queue */
       switch(event.type) {         /* Process the appropriate event type */
-      case SDL_KEYDOWN:         /* Handle a KEYDOWN event */
-	switch(event.key.keysym.sym){
-	case SDLK_RIGHT:
-	  pt.x+=5;
+      case SDL_JOYAXISMOTION:
+	/*Valable au moins pour l'Xbox controler*/
+	switch(event.jaxis.axis){
+	case 0: // droite - gauche pad(s) gauche
+	  pt.x+=event.jaxis.value/10000;
 	  break;
-	case SDLK_LEFT:
-	  pt.x-=5;
+	case 1: // haut - bas pad(s) gauche
+	  pt.y+=event.jaxis.value/10000;
+	case 2: // gachette gauche
 	  break;
-	case SDLK_UP:
-	  pt.y-=5;
+	case 3: // droite - gauche pad droit
 	  break;
-	case SDLK_DOWN:
-	  pt.y+=5;
+	case 4: // haut - bas pad droit
+	  break;
+	case 5: // gachette droite
 	  break;
 	default:
 	  break;
-	}
+	}  
 	break;
-      case SDL_JOYAXISMOTION:
-      	if ( event.jaxis.value > -500 && event.jaxis.value < 500 )
-	  break;
-	else{
-	  //   printf("joystick: %s : Axe : %d : Valeur : %d\n", 
-	  //	    SDL_JoystickName(event.jaxis.which) , event.jaxis.axis , event.jaxis.value);
-	  switch(event.jaxis.axis){
-	  case 1:
-	    pt.y+=event.jaxis.value/10000;
-	    break;
-	  case 0:
-	    pt.x+=event.jaxis.value/10000;
-	  default:
-	    break;
-	  }  
-	  break;
-	}
-	/*case SDL_MOUSEMOTION:
-	printf("%d : %d : ( %d , %d )\n", event.motion.type , event.motion.state , event.motion.x , event.motion.y);
-	break;*/
       case SDL_QUIT:
 	keepgoing=0;
 	break;
       default: /* Report an unhandled event */
 	break;
       }
-      //      SDL_BlitSurface(  ,  ,  ,  );
     }
   /*******************************************************************************************/
   }
-
-
   SDL_Quit();    //ferme SDL
   return 0;
 }
