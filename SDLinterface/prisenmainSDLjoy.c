@@ -4,7 +4,7 @@
 
 
 int main( void ){
-  SDL_Init(SDL_INIT_VIDEO);                                          // Demarre SDL
+  SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);                                          // Demarre SDL
 
   SDL_Surface * screen = SDL_SetVideoMode(640,480,32,SDL_HWSURFACE);  //  Sauvegarde Surface Fond d'ecran
   SDL_Rect r = {0,0,screen->w,screen->h};                              //  Rectangle de fond d'écran
@@ -13,6 +13,17 @@ int main( void ){
   int keepgoing = 1;                                                   //  controle de boucle "infini"
   SDL_Event event;                                                   // Charge les events
 
+  /*  Charge le joystick  */
+  SDL_Joystick * joy;
+  for (int i = 0 ; i < SDL_NumJoysticks() ; i++ ){
+    joy=SDL_JoystickOpen(i);
+    printf("Detecté joystick %d\n", i );
+    printf("Nom:\t%s\n", SDL_JoystickName(i));
+    printf("Nombre d'axes :\t%d\n",SDL_JoystickNumAxes(joy));
+  }
+
+  printf("current number of joystick : %d\n", SDL_NumJoysticks());
+  
 
   while (keepgoing)  {
   /************************************** Boucle Infinie ***************************************/
@@ -42,6 +53,26 @@ int main( void ){
 	  break;
 	}
 	break;
+      case SDL_JOYAXISMOTION:
+      	if ( event.jaxis.value > -500 && event.jaxis.value < 500 )
+	  break;
+	else{
+	  //   printf("joystick: %s : Axe : %d : Valeur : %d\n", 
+	  //	    SDL_JoystickName(event.jaxis.which) , event.jaxis.axis , event.jaxis.value);
+	  switch(event.jaxis.axis){
+	  case 1:
+	    pt.y+=event.jaxis.value/10000;
+	    break;
+	  case 0:
+	    pt.x+=event.jaxis.value/10000;
+	  default:
+	    break;
+	  }  
+	  break;
+	}
+	/*case SDL_MOUSEMOTION:
+	printf("%d : %d : ( %d , %d )\n", event.motion.type , event.motion.state , event.motion.x , event.motion.y);
+	break;*/
       case SDL_QUIT:
 	keepgoing=0;
 	break;
