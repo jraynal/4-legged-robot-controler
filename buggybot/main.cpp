@@ -130,16 +130,34 @@ void loop () {
         Serial3.write(SerialUSB.read());
     }
 }
-
+/*
 static uint16 init_all_timers_prescale = 0;
 
 static void set_prescale(timer_dev *dev) {
     timer_set_prescaler(dev, init_all_timers_prescale);
 }
+*/
+
+#define SERVOS_TIMERS_PRESCALE 24
+#define SERVOS_TIMERS_OVERFLOW 60000
+
+void initTimer(uint8_t i)
+{
+    HardwareTimer timer(i);
+    timer.pause();
+    timer.setPrescaleFactor(SERVOS_TIMERS_PRESCALE);
+    timer.setOverflow(SERVOS_TIMERS_OVERFLOW);
+    timer.refresh();
+    timer.resume();
+}
 
 void init_all_timers(uint16 prescale) {
-    init_all_timers_prescale = prescale;
-    timer_foreach(set_prescale);
+    //init_all_timers_prescale = prescale;
+    //timer_foreach(set_prescale);
+    initTimer(1);
+    initTimer(2);
+    initTimer(3);
+    initTimer(4);
 }
 
 
