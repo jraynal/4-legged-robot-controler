@@ -68,8 +68,6 @@ void setup() {
     pinMode(BOARD_LED_PIN, OUTPUT);
               
     // Start up the serial ports
-    Serial1.begin(BAUD);
-    Serial2.begin(BAUD);
     Serial3.begin(921600);
     SerialUSB.begin();
 
