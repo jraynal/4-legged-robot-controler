@@ -1,0 +1,18 @@
+
+  #####    ####   ####    ####   #######
+  #    #  #    #  #   #  #    #     #
+  #####   #    #  ####   #    #     #
+  ###     #    #  #    # #    #     #
+  #  ##   #    #  #    # #    #     #
+  #    #   ####   ####    ####      #    #
+
+Depot du code de l'équipe Eirbot pour Robotwar
+
+
+EQUIPE :
+  nbelin     :  Source d'idées
+  ldauphin   :  Grand Manitou
+  jraynal    :  Chargé meca
+  stouchard  :  Assistant claqué
+
+Attention, le code contenu dans ce depot ne sont pas compilable tels quels, il faut avoir un environnement de developpement Maple. Le mieu est de se farcir les choses à la main avec la compilation manuelle et la liMaple. Un IDE existe mais on a jamais testé.

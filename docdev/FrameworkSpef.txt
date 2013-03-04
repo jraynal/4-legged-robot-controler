@@ -1,0 +1,38 @@
+Robot War 2012-2013
+Equipe Eirbot
+
+nbelin
+ldauphin
+jraynal
+stouchard
+
+Côté PC:
+
+Communication WIFI
+    Configuration WiFly		  : 1 : Utilisation de SDL-Net
+    		  		 
+Control Joystic			 
+    Récupération des évènements	   : 1 : Utilisation de SDL
+
+Côté Maple Mini :
+
+Communication WIFI
+    Configuration WiFly	           : 1 : 
+    Parseur Commande               : 1 :
+
+Manipulation servomoteurs
+    Fixation en temps réel des angles : 1 :   type servo : PIN
+					       	      Engine
+						      Angle
+				          set_angle  ( servo , angle )    -> void		      
+    	     	      	       	      	  get_angle  ( servo )           -> angle
+
+    Initialisation des servo           : 1 :   init_servo ( PIN , Engine )       -> servo 
+    		       		       	 
+Manipulation des Animations
+    Sauvegarde des Etats des moteurs : 1 :  type frame   :  tableau d'angles
+    	       	   	     	       	 type animation :  tableau de frame      
+    	       	   	     	       	 get_frame ( animation , curseur )         -> animation
+    Charger un Etat	     	   : 2 :  load_animation ( animation )      	 -> void
+    Exécuter une animation           : 2 :  next_frame ( animation , curseur ) 	 -> curseur
+    	     	 		       	  get_angle ( animation , curseur , engine ) -> angle
