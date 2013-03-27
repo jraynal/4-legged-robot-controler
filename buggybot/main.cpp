@@ -42,6 +42,7 @@ int enginePin[MAX_ENGINE] = {3,4,5,9,8,10,11,25,16,15};
 void setup() {
     //Le anim_load devra etre appele quand bouton presse
     anim_load(ANIM_WALK_FORWARD);
+    
     for(int i = 0 ; i < 41 ; i++) {
         for(int j = 0 ; j < MAX_ENGINE ; j++) {
             animation[0][j][i] = 
@@ -63,7 +64,7 @@ void setup() {
         animation[0][4][i] += 500;
         //animation[0][4][i] = MAX_COUNT + MIN_COUNT - animation[0][4][i];
     }
-
+    
     // Set up the LED to blink
     pinMode(BOARD_LED_PIN, OUTPUT);
               
@@ -78,7 +79,7 @@ void setup() {
 
     for (servoi=0;servoi<MAX_ENGINE;servoi++){
         pinMode(enginePin[servoi], PWM);
-        pwmWrite(enginePin[servoi], 4000);
+        pwmWrite(enginePin[servoi], MIN_COUNT);
     }
 }
 
@@ -96,7 +97,7 @@ void loop () {
         //pwmWrite(enginePin[n_eng], MAX_COUNT_TEST);
     }
     
-    delay(20);
+    delay(50);
     anim_next_date(1);
     
     
@@ -114,7 +115,7 @@ void loop () {
         delay(200);
     }
     */
-
+    /*
     cursor = 0;
     while(Serial3.available() && cursor < sizeof(buffer)) {
         buffer[cursor++] = Serial3.read();
@@ -127,6 +128,7 @@ void loop () {
     while(SerialUSB.available()) {
         Serial3.write(SerialUSB.read());
     }
+    */
 }
 /*
 static uint16 init_all_timers_prescale = 0;
