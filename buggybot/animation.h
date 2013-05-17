@@ -5,7 +5,7 @@
 
 // Ce module doit implémenter les données importés de Blender
 #define INTERVAL 5 //meme unite que la date
-#define NB_ECHANTILLON 41
+#define NB_ECHANTILLON 40
 
 enum Anim {
     ANIM_WALK_FORWARD,
@@ -17,8 +17,9 @@ enum Anim {
     ////
     MAX_ANIM
 };
+
 typedef unsigned char uint8;
-extern int animation[1][10][41];
+extern int animation[1][10][40];
 
 // Change l'animation courrante
 void anim_load(int anim);
