@@ -90,44 +90,72 @@ unsigned int cursor = 0;
 
 void loop () {
     
-    uint8 n_eng;
-    for (n_eng=0;n_eng<MAX_ENGINE;n_eng++) {
-        pwmWrite(enginePin[n_eng], anim_get_pwm(n_eng));
-        //pwmWrite(enginePin[n_eng], MAX_COUNT_TEST);
-    }
+  // test improbable par Nico
+  static char anim = 'B';
 
-    delay(50);
-    anim_next_date(4);
-    
-    
-    toggleLED();
-    /*
-    while (!SerialUSB.available()) {
-        for (servoi=0;servoi<10;servoi++){
-            if (rate > 6881)
-                rate = 2950;
-            rate += 20;
-            if (boardUsesPin(servoi))
-                continue;
-            pwmWrite(boardPWMPins[servoi], rate);
-        }
-        delay(200);
+  if (Serial3.available()){
+    switch (SerialUSB.read()){
+    case 'B':
+      anim = 'B';
+      break;
+    case 'Z':
+      anim = 'Z';
+      break;
+    case 'Q':
+      anim = 'Q';
+      break;
+    case 'S':
+      anim = 'S';
+      break;
+    case 'D':
+      anim = 'D';
+      break;
     }
-    */
-    /*
+  }
+  
+  uint8 n_eng;
+  if (anim == 'Z'){
+    for (n_eng=0;n_eng<MAX_ENGINE;n_eng++) {
+      pwmWrite(enginePin[n_eng], anim_get_pwm(n_eng));
+      //pwmWrite(enginePin[n_eng], MAX_COUNT_TEST);
+    }
+  }
+
+  
+  
+  delay(50);
+  anim_next_date(4);
+  
+  
+  toggleLED();
+  /*
+    while (!SerialUSB.available()) {
+    for (servoi=0;servoi<10;servoi++){
+    if (rate > 6881)
+    rate = 2950;
+    rate += 20;
+    if (boardUsesPin(servoi))
+    continue;
+    pwmWrite(boardPWMPins[servoi], rate);
+    }
+    delay(200);
+    }
+  */
+  /*
     cursor = 0;
     while(Serial3.available() && cursor < sizeof(buffer)) {
-        buffer[cursor++] = Serial3.read();
+    buffer[cursor++] = Serial3.read();
     }
-
+    
     if(cursor > 0) {
-        SerialUSB.write(buffer, cursor);
+    SerialUSB.write(buffer, cursor);
     }
-
+    
     while(SerialUSB.available()) {
-        Serial3.write(SerialUSB.read());
+    Serial3.write(SerialUSB.read());
     }
-    */
+  */
+  
 }
 /*
 static uint16 init_all_timers_prescale = 0;
