@@ -97,7 +97,7 @@ void loop () {
     }
 
     delay(50);
-    anim_next_date(1);
+    anim_next_date(4);
     
     
     toggleLED();
