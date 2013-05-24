@@ -40,9 +40,24 @@ int main( void ){
 	switch(event.jaxis.axis){
 	case 0: // droite - gauche pad(s) gauche
 	  pt.x+=event.jaxis.value/10000;
+	  if(event.jaxis.value/10000>0)
+	    fprintf(stderr,"Commande : Droite\n");
+	  else 
+	    if(event.jaxis.value/10000<0)
+	      fprintf(stderr,"Commande : Gauche\n");
+	    else
+	      fprintf(stderr,"Commande : Pas Bouger\n");
 	  break;
 	case 1: // haut - bas pad(s) gauche
 	  pt.y+=event.jaxis.value/10000;
+	  if(event.jaxis.value/10000>0)
+	    fprintf(stderr,"Commande : Bas\n");
+	  else 
+	    if(event.jaxis.value/10000<0)
+	      fprintf(stderr,"Commande : Haut\n");
+	    else
+	      fprintf(stderr,"Commande : Pas Bouger\n");
+	  break;
 	case 2: // gachette gauche
 	  break;
 	case 3: // droite - gauche pad droit
