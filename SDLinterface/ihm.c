@@ -3,15 +3,19 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_net.h>
 
+#define DB(n) fprintf(stderr,#n"\n");
+
 TCPsocket init_net(char *adresse, char *port, IPaddress *ip){
   TCPsocket sd;
   /* Simple parameter checking */
+  DB(net : initialize)
   if (SDLNet_Init() < 0)
     {
       fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
       exit(EXIT_FAILURE);
     }
- 
+  DB(net : resolve host)
+  printf("%s (%s)\n", adresse, port);
   /* Resolve the host we are connecting to */
   if (SDLNet_ResolveHost(ip, adresse, atoi(port) < 0))
     {
@@ -19,8 +23,9 @@ TCPsocket init_net(char *adresse, char *port, IPaddress *ip){
       exit(EXIT_FAILURE);
     }
  
+  DB(net : Open IP)
   /* Open a connection with the IP provided (listen on the host's port) */
-  if (!(sd = SDLNet_TCP_Open(ip)))
+    if (!(sd = SDLNet_TCP_Open(ip)))
     {
       fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
       exit(EXIT_FAILURE);
@@ -85,22 +90,21 @@ int main( void ){
     printf("Joystick : Nom:\t%s\n", SDL_JoystickName(i));
     printf("Joystick : axes :\t%d\n",SDL_JoystickNumAxes(joy));
   }
-
   printf("Joystick : number : %d\n", SDL_NumJoysticks());
-  while (keepgoing)  {
+
+  while (keepgoing){
     /********************** Boucle Infinie ********************************/
     /* Check for events */
     while(SDL_PollEvent(&event)) { /* Loop until there are no events left on the queue */
       capture_event(buffer, event);
       len = strlen(buffer) + 1;
-      if (SDLNet_TCP_Send(sd, (void *)buffer, len) < len)
-	{
+      if (SDLNet_TCP_Send(sd, (void *)buffer, len) < len){
 	  fprintf(stderr, "SDLNet_TCP_Send: %s\n", SDLNet_GetError());
 	  exit(EXIT_FAILURE);
 	}
     }
   }
-  /*******************************************************************************************/
+  /************************************************************************/
   fprintf(stderr,"Closing connection\n");
   SDLNet_TCP_Close(sd);
   SDL_Quit();    //ferme SDL
