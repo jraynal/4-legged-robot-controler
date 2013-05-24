@@ -3,84 +3,75 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_net.h>
 
-#define DB(n) fprintf(stderr,#n"\n");
+char switch_axe(int val, int seuil, char high, char low, char def) {
+  if(seuil < val)
+    return high;
+  else if(val < -seuil)
+    return low;
+  else
+    return def;
+}
 
-TCPsocket init_net(char *adresse, char *port, IPaddress *ip){
+TCPsocket init_net(char *adresse, int port){
   TCPsocket sd;
+  IPaddress ip;
   /* Simple parameter checking */
-  DB(net : initialize)
-  if (SDLNet_Init() < 0)
-    {
+  if (SDLNet_Init() < 0){
       fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
       exit(EXIT_FAILURE);
     }
-  DB(net : resolve host)
-  printf("%s (%s)\n", adresse, port);
+ 
   /* Resolve the host we are connecting to */
-  if (SDLNet_ResolveHost(ip, adresse, atoi(port) < 0))
-    {
+  if (SDLNet_ResolveHost(&ip, adresse, port)){
       fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
       exit(EXIT_FAILURE);
     }
  
-  DB(net : Open IP)
   /* Open a connection with the IP provided (listen on the host's port) */
-    if (!(sd = SDLNet_TCP_Open(ip)))
-    {
+  if (!(sd = SDLNet_TCP_Open(&ip))){
       fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
       exit(EXIT_FAILURE);
     } 
+
   fprintf(stderr,"Connection enabled\n");
   return sd;
 }
 
-char *capture_event(char *buffer, SDL_Event event){
-  fprintf(stderr,"loop : capture event\n");
+int capture_event(char *buffer, SDL_Event event, int keepgoing){
   switch(event.type) {         /* Process the appropriate event type */
   case SDL_JOYAXISMOTION:
     /*Valable au moins pour l'Xbox controler*/
     switch(event.jaxis.axis){
     case 0: // droite - gauche pad(s) gauche
-      if(event.jaxis.value/10000 > 0)
-	buffer[0]='D';
-      else 
-	if(event.jaxis.value/10000 < 0)
-	  buffer[0]='Q';
-	else
-	  buffer[0]='B';
-      fprintf(stderr,"envoi : %s\n",buffer);
+      buffer[5] = switch_axe(event.jaxis.value, 10000, 'Q', 'D', 'B');
       break;
     case 1: // haut - bas pad(s) gauche
-      if(event.jaxis.value/10000 > 0)
-	buffer[0]='Z';
-      else 
-	if(event.jaxis.value/10000 < 0)
-	  buffer[0]='S';
-	else
-	  buffer[0]='B';
-      fprintf(stderr,"envoi : %s\n",buffer);
+      buffer[6] = switch_axe(event.jaxis.value, 10000, 'Z', 'S', 'B');
       break;
     default:
-      buffer[0]='B';
-      fprintf(stderr,"envoi : %s\n",buffer);
       break;
     }
-  default:
+    if(buffer[5] == 'B')
+      buffer[0] = buffer[6];
+    else
+      buffer[0] = buffer[5];
+
+    break;
+  case SDL_QUIT:
+    keepgoing = 0;
     break;
   }
-  return buffer;
+  return keepgoing;
 }
 
 int main( void ){
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);                      // Demarre SDL
   int keepgoing = 1;                                // Controle de boucle "infini"
   SDL_Event event;                                  // Charge les events
-
-  IPaddress ip;		/* Server address */
-  TCPsocket sd = init_net("10.0.0.1","3000",&ip);		/* Socket descriptor */
   int len;
   char buffer[512];
- 
+
+  TCPsocket sd = init_net("10.0.0.1",3000);		/* Socket descriptor */
 
   /*  Charge le joystick  */
   SDL_Joystick * joy;
@@ -92,21 +83,27 @@ int main( void ){
   }
   printf("Joystick : number : %d\n", SDL_NumJoysticks());
 
-  while (keepgoing){
+  buffer[2] = '\0';
+  while (keepgoing)  {
     /********************** Boucle Infinie ********************************/
     /* Check for events */
     while(SDL_PollEvent(&event)) { /* Loop until there are no events left on the queue */
-      capture_event(buffer, event);
+      keepgoing = capture_event(buffer, event, keepgoing);
       len = strlen(buffer) + 1;
-      if (SDLNet_TCP_Send(sd, (void *)buffer, len) < len){
-	  fprintf(stderr, "SDLNet_TCP_Send: %s\n", SDLNet_GetError());
-	  exit(EXIT_FAILURE);
-	}
+      if(buffer[0] != buffer[2]) {
+	buffer[2] = buffer[0];
+	buffer[1] = '\0';
+	SDLNet_TCP_Send(sd, (void *)buffer, 1);
+      }
+      /* if (SDLNet_TCP_Send(sd, (void *)buffer, len) < len){ */
+      /* 	  fprintf(stderr, "SDLNet_TCP_Send: %s\n", SDLNet_GetError()); */
+      /* 	  exit(EXIT_FAILURE); */
+      /* 	} */
     }
   }
-  /************************************************************************/
-  fprintf(stderr,"Closing connection\n");
+  /*************************************************************************/
+  fprintf(stderr,"\n Closing connection\n");
   SDLNet_TCP_Close(sd);
-  SDL_Quit();    //ferme SDL
+  SDL_Quit();                             //ferme SDL
   return EXIT_SUCCESS;
 }
