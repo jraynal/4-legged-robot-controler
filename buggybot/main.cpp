@@ -89,7 +89,7 @@ char buffer[2048];
 unsigned int cursor = 0;
 
 void loop () {
-    
+  
   // test improbable par Nico
   static char anim = 'B';
 
@@ -111,6 +111,7 @@ void loop () {
       anim = 'D';
       break;
     }
+    SerialUSB.write(&anim, 1);
   }
   
   uint8 n_eng;
@@ -128,6 +129,7 @@ void loop () {
   
   
   toggleLED();
+  
   /*
     while (!SerialUSB.available()) {
     for (servoi=0;servoi<10;servoi++){
