@@ -46,7 +46,7 @@ int capture_event(char *buffer, SDL_Event event, int keepgoing){
       buffer[5] = switch_axe(event.jaxis.value, 10000, 'Q', 'D', 'B');
       break;
     case 1: // haut - bas pad(s) gauche
-      buffer[6] = switch_axe(event.jaxis.value, 10000, 'Z', 'S', 'B');
+      buffer[6] = switch_axe(event.jaxis.value, 10000, 'S', 'Z', 'B');
       break;
     default:
       break;

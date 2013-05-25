@@ -8,18 +8,23 @@
 #define NB_ECHANTILLON 40
 
 enum Anim {
-    ANIM_WALK_FORWARD,
-    ANIM_WALK_BACKWARD,
-    ANIM_WALK_LEFTWARD, 
-    ANIM_WALK_RIGHTWARD,
-    // Ajouter des animation ici
-
-    ////
-    MAX_ANIM
+  ANIM_NONE,
+  ANIM_WALK_FORWARD,
+  ANIM_WALK_BACKWARD,
+  ANIM_WALK_LEFTWARD, 
+  ANIM_WALK_RIGHTWARD,
+  // Ajouter des animation ici
+  
+  ////
+  MAX_ANIM
 };
 
+
 typedef unsigned char uint8;
-extern int animation[1][10][40];
+extern int animation[3][10][NB_ECHANTILLON];
+
+extern int current_anim;
+extern int date;
 
 // Change l'animation courrante
 void anim_load(int anim);

@@ -32,7 +32,7 @@ int enginePin[MAX_ENGINE] = {3,4,5,9,8,10,11,25,16,15};
 
 void setup() {
     //Le anim_load devra etre appele quand bouton presse
-    anim_load(ANIM_WALK_FORWARD);
+    anim_load(ANIM_NONE);
     pinMode(BOARD_LED_PIN, OUTPUT);
               
     // Start up the serial ports
@@ -55,40 +55,36 @@ int counter = 0;
 char buffer[2048];
 unsigned int cursor = 0;
 
+char evt = 'B';
+
 void loop () {
   static uint8 n_eng;
-  // test improbable par Nico
-  static char anim = 'B';
 
   if (Serial3.available()){
-    switch (Serial3.read()){
-    case 'B':
-      anim = 'B';
-      break;
-    case 'Z':
-      anim = 'Z';
-      break;
-    case 'Q':
-      anim = 'Q';
-      break;
-    case 'S':
-      anim = 'S';
-      break;
-    case 'D':
-      anim = 'D';
-      break;
-    }
-    SerialUSB.write(&anim, 1);
+    evt = Serial3.read();
+    SerialUSB.write(&evt, 1);
   }
   
-  if (anim == 'Z'){
-    for (n_eng=0;n_eng<MAX_ENGINE;n_eng++) {
-      pwmWrite(enginePin[n_eng], anim_get_pwm(n_eng));
-    }
+  switch(evt) {
+  case 'Z':
+    anim_load(ANIM_WALK_FORWARD);
+    break;
+  case 'S':
+    anim_load(ANIM_WALK_BACKWARD);
+    break;
+  default:
+    anim_load(ANIM_NONE);
+    break;
   }
 
-  delay(50);
-  anim_next_date(4);
+  SerialUSB.println(date);
+
+  for (n_eng=0;n_eng<MAX_ENGINE;n_eng++) {
+    pwmWrite(enginePin[n_eng], anim_get_pwm(n_eng));
+  }
+
+  delay(25);
+  anim_next_date(5);
 
   toggleLED();  
 }
