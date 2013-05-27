@@ -43,7 +43,7 @@ int capture_event(char *buffer, SDL_Event event, int keepgoing){
     /*Valable au moins pour l'Xbox controler*/
     switch(event.jaxis.axis){
     case 0: // droite - gauche pad(s) gauche
-      buffer[5] = switch_axe(event.jaxis.value, 10000, 'Q', 'D', 'B');
+      buffer[5] = switch_axe(event.jaxis.value, 10000, 'D', 'Q', 'B');
       break;
     case 1: // haut - bas pad(s) gauche
       buffer[6] = switch_axe(event.jaxis.value, 10000, 'S', 'Z', 'B');
