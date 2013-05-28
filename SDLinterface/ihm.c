@@ -37,8 +37,19 @@ TCPsocket init_net(char *adresse, int port){
   return sd;
 }
 
+void priority(char *buffer){
+  if(buffer[4] != 'A'){
+    if(buffer[5] == 'B')
+      buffer[0] = buffer[6];
+    else
+      buffer[0] = buffer[5];
+  }
+  else
+    buffer[0]=buffer[4];
+}
+
 int capture_event(char *buffer, SDL_Event event, int keepgoing){
-  switch(event.type) {         /* Process the appropriate event type */
+  switch(event.type) {   /* Process the appropriate event type */
   case SDL_JOYAXISMOTION:
     /*Valable au moins pour l'Xbox controler*/
     switch(event.jaxis.axis){
@@ -50,19 +61,13 @@ int capture_event(char *buffer, SDL_Event event, int keepgoing){
       break;
     case 5:
       if(event.jaxis.value > 0)
-	buffer[0] = 'A';
+	buffer[4] = 'A';
       fprintf(stderr, "%d\n", event.jaxis.value);
       break;
     default:
       break;
     }
-    if(buffer[0] != 'A') {
-      if(buffer[5] == 'B')
-	buffer[0] = buffer[6];
-      else
-	buffer[0] = buffer[5];
-    }
-
+    priority(buffer);
     break;
   case SDL_QUIT:
     keepgoing = 0;
