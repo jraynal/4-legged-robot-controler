@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <SDL/SDL.h>
 
+#define BUTTON(n) fprintf(stderr,"this button is : %d \n", n);
 
 int main( void ){
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);                                          // Demarre SDL
@@ -42,21 +43,15 @@ int main( void ){
 	  pt.x+=event.jaxis.value/10000;
 	  if(event.jaxis.value/10000>0)
 	    fprintf(stderr,"Commande : Droite\n");
-	  else 
-	    if(event.jaxis.value/10000<0)
+	  else if(event.jaxis.value/10000<0)
 	      fprintf(stderr,"Commande : Gauche\n");
-	    else
-	      fprintf(stderr,"Commande : Pas Bouger\n");
 	  break;
 	case 1: // haut - bas pad(s) gauche
 	  pt.y+=event.jaxis.value/10000;
 	  if(event.jaxis.value/10000>0)
 	    fprintf(stderr,"Commande : Bas\n");
-	  else 
-	    if(event.jaxis.value/10000<0)
+	  else if(event.jaxis.value/10000<0)
 	      fprintf(stderr,"Commande : Haut\n");
-	    else
-	      fprintf(stderr,"Commande : Pas Bouger\n");
 	  break;
 	case 2: // gachette gauche
 	  break;
@@ -70,6 +65,32 @@ int main( void ){
 	  break;
 	}  
 	break;
+      case SDL_JOYBUTTONDOWN:
+	switch(event.jbutton.button){
+	case 0:  /*  A   */
+	  break;
+	case 1:  /*  B   */
+	  break;
+	case 2:  /*  X   */
+	  break;
+	case 3:  /*  Y   */
+	  break;
+	case 4:  /*  LB  */
+	  break;
+	case 5:  /*  RB  */
+	  break;
+	case 6:  /* SELECT */
+	  break;
+	case 7:  /* START  */
+	  break;
+	case 8:  /* XBOX   */
+	  break;
+	case 9:  /* PADLFT */
+	  break;
+	case 10: /* PADRGT */
+	  break;
+	}
+	  break;
       case SDL_QUIT:
 	keepgoing=0;
 	break;
