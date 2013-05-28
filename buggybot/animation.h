@@ -14,14 +14,14 @@ enum Anim {
   ANIM_WALK_LEFTWARD, 
   ANIM_WALK_RIGHTWARD,
   // Ajouter des animation ici
-  
+  ANIM_CHARGE,
   ////
   MAX_ANIM
 };
 
 
 typedef unsigned char uint8;
-extern int animation[3][10][NB_ECHANTILLON];
+extern int animation[6][10][NB_ECHANTILLON];
 
 extern int current_anim;
 extern int date;

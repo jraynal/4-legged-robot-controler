@@ -48,13 +48,20 @@ int capture_event(char *buffer, SDL_Event event, int keepgoing){
     case 1: // haut - bas pad(s) gauche
       buffer[6] = switch_axe(event.jaxis.value, 10000, 'S', 'Z', 'B');
       break;
+    case 5:
+      if(event.jaxis.value > 0)
+	buffer[0] = 'A';
+      fprintf(stderr, "%d\n", event.jaxis.value);
+      break;
     default:
       break;
     }
-    if(buffer[5] == 'B')
-      buffer[0] = buffer[6];
-    else
-      buffer[0] = buffer[5];
+    if(buffer[0] != 'A') {
+      if(buffer[5] == 'B')
+	buffer[0] = buffer[6];
+      else
+	buffer[0] = buffer[5];
+    }
 
     break;
   case SDL_QUIT:
@@ -68,9 +75,8 @@ int main( void ){
   SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);                      // Demarre SDL
   int keepgoing = 1;                                // Controle de boucle "infini"
   SDL_Event event;                                  // Charge les events
-  int len;
   char buffer[512];
-
+  int len;
   TCPsocket sd = init_net("10.0.0.1",3000);		/* Socket descriptor */
 
   /*  Charge le joystick  */

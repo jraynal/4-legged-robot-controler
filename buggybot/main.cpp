@@ -56,6 +56,7 @@ char buffer[2048];
 unsigned int cursor = 0;
 
 char evt = 'B';
+int loop_inter = 5;
 
 void loop () {
   static uint8 n_eng;
@@ -72,9 +73,25 @@ void loop () {
   case 'S':
     anim_load(ANIM_WALK_BACKWARD);
     break;
+  case 'Q':
+    anim_load(ANIM_WALK_LEFTWARD);
+    break;
+  case 'D':
+    anim_load(ANIM_WALK_RIGHTWARD);
+    break;
+  case 'A':
+    anim_load(ANIM_CHARGE);
+    break;
   default:
     anim_load(ANIM_NONE);
     break;
+  }
+
+  if(evt == 'Z') {
+    loop_inter = 3;
+  }
+  else {
+    loop_inter = 5;
   }
 
   SerialUSB.println(date);
@@ -84,7 +101,7 @@ void loop () {
   }
 
   delay(25);
-  anim_next_date(5);
+  anim_next_date(loop_inter);
 
   toggleLED();  
 }
