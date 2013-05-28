@@ -38,8 +38,9 @@ TCPsocket init_net(char *adresse, int port){
 }
 
 void priority(char *buffer){
-  int i = 2;
-  while(buffer[i]=='B' || i < 7){
+  int i = 3;
+  while(buffer[i]=='B' && i < 9){
+    fprintf(stderr,"buffer : %c : %d\n", buffer[i],i);
     i++;
   }
   buffer[0] = buffer[i];
@@ -51,10 +52,10 @@ int capture_event(char *buffer, SDL_Event event, int keepgoing){
     /*Valable au moins pour l'Xbox controler*/
     switch(event.jaxis.axis){
     case 0: // droite - gauche pad(s) gauche
-      buffer[3] = switch_axe(event.jaxis.value, 10000, 'D', 'Q', 'B');
+      buffer[5] = switch_axe(event.jaxis.value, 10000, 'D', 'Q', 'B');
       break;
     case 1: // haut - bas pad(s) gauche
-      buffer[2] = switch_axe(event.jaxis.value, 10000, 'S', 'Z', 'B');
+      buffer[4] = switch_axe(event.jaxis.value, 10000, 'S', 'Z', 'B');
       break;
     default:
       break;
@@ -63,37 +64,39 @@ int capture_event(char *buffer, SDL_Event event, int keepgoing){
   case SDL_JOYBUTTONDOWN:
     switch(event.jbutton.button){
     case 0:  /*  A   */
-      buffer[4]='A';
+      buffer[6]='A';
       break;
     case 1:  /*  B   */
-      buffer[6]='R';
+      buffer[8]='R';
       break;
     case 2:  /*  X   */
       buffer[7]='C';
       break;
     case 3:  /*  Y   */
-      buffer[5]='F';
+      buffer[9]='F';
       break;
     default:
       break;
     }
+    break;
   case SDL_JOYBUTTONUP:
     switch(event.jbutton.button){
     case 0:  /*  A   */
-      buffer[4]='B';
+      buffer[6]='B';
       break;
     case 1:  /*  B   */
-      buffer[6]='B';
+      buffer[8]='B';
       break;
     case 2:  /*  X   */
       buffer[7]='B';
       break;
     case 3:  /*  Y   */
-      buffer[5]='B';
+      buffer[9]='B';
       break;
     default:
       break;
     }
+    break;
   case SDL_QUIT:
     keepgoing = 0;
     break;
@@ -106,7 +109,8 @@ int main( void ){
   int keepgoing = 1;                                // Controle de boucle "infini"
   SDL_Event event;                                  // Charge les events
   char buffer[512];
-  /* int len = 0; */
+  buffer[3]='B';
+  buffer[10]='\0';
   TCPsocket sd = init_net("10.0.0.1",3000);		/* Socket descriptor */
 
   /*  Charge le joystick  */
@@ -126,16 +130,11 @@ int main( void ){
     while(SDL_PollEvent(&event)) { /* Loop until there are no events left on the queue */
       keepgoing = capture_event(buffer, event, keepgoing);
       priority(buffer);
-      /* len = strlen(buffer) + 1; */
       if(buffer[0] != buffer[2]) {
 	buffer[2] = buffer[0];
 	buffer[1] = '\0';
 	SDLNet_TCP_Send(sd, (void *)buffer, 1);
       }
-      /* if (SDLNet_TCP_Send(sd, (void *)buffer, len) < len){ */
-      /* 	  fprintf(stderr, "SDLNet_TCP_Send: %s\n", SDLNet_GetError()); */
-      /* 	  exit(EXIT_FAILURE); */
-      /* 	} */
     }
   }
   /*************************************************************************/
