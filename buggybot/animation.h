@@ -15,19 +15,23 @@ enum Anim {
   ANIM_WALK_RIGHTWARD,
   // Ajouter des animation ici
   ANIM_CHARGE,
+  ANIM_RISE,
+  ANIM_FALL,
+  ANIM_ATTACK,
   ////
   MAX_ANIM
 };
 
 
 typedef unsigned char uint8;
-extern int animation[6][10][NB_ECHANTILLON];
+extern short animation[MAX_ANIM][10][NB_ECHANTILLON];
 
 extern int current_anim;
 extern int date;
+extern int anim_loop;
 
 // Change l'animation courrante
-void anim_load(int anim);
+void anim_load(int anim, int _loop);
 
 // Renvoie l'angle d'un moteur en fonction du temps ecoule 
 // depuis le dernier appel

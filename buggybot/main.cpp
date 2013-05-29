@@ -32,7 +32,7 @@ int enginePin[MAX_ENGINE] = {3,4,5,9,8,10,11,25,16,15};
 
 void setup() {
     //Le anim_load devra etre appele quand bouton presse
-    anim_load(ANIM_NONE);
+  anim_load(ANIM_NONE, 1);
     pinMode(BOARD_LED_PIN, OUTPUT);
               
     // Start up the serial ports
@@ -58,6 +58,13 @@ unsigned int cursor = 0;
 char evt = 'B';
 int loop_inter = 5;
 
+enum robot_state {
+  WAKE,
+  FLOOR
+};
+
+enum robot_state state = WAKE;
+
 void loop () {
   static uint8 n_eng;
 
@@ -66,25 +73,43 @@ void loop () {
     SerialUSB.write(&evt, 1);
   }
   
-  switch(evt) {
-  case 'Z':
-    anim_load(ANIM_WALK_FORWARD);
-    break;
-  case 'S':
-    anim_load(ANIM_WALK_BACKWARD);
-    break;
-  case 'Q':
-    anim_load(ANIM_WALK_LEFTWARD);
-    break;
-  case 'D':
-    anim_load(ANIM_WALK_RIGHTWARD);
-    break;
-  case 'A':
-    anim_load(ANIM_CHARGE);
-    break;
-  default:
-    anim_load(ANIM_NONE);
-    break;
+  if(state == WAKE) {
+    switch(evt) {
+    case 'Z':
+      anim_load(ANIM_WALK_FORWARD, 1);
+      break;
+    case 'S':
+      anim_load(ANIM_WALK_BACKWARD, 1);
+      break;
+    case 'Q':
+      anim_load(ANIM_WALK_LEFTWARD, 1);
+      break;
+    case 'D':
+      anim_load(ANIM_WALK_RIGHTWARD, 1);
+      break;
+    case 'C':
+      anim_load(ANIM_CHARGE, 0);
+      evt = 'B';
+      break;
+    case 'F':
+      anim_load(ANIM_FALL, 0);
+      state = FLOOR;
+      evt = 'B';
+      break;
+    case 'A':
+      anim_load(ANIM_ATTACK, 0);
+      evt = 'B';
+      break;
+    default:
+      anim_load(ANIM_NONE, 1);
+      break;
+    }
+  }
+  else {
+    if(evt == 'R') {
+      anim_load(ANIM_RISE, 0);
+      state = WAKE;
+    }
   }
 
   if(evt == 'Z') {
